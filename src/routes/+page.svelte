@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Week } from '../types/Week';
 	import AWeek from '../components/AWeek.svelte';
+	import ASemesterCalendar from '../components/ASemesterCalendar.svelte';
+	import { SemesterEnum } from '../enum/SemesterEnum';
+
 	const browserLang = navigator.language || navigator.userLanguage;
 
 	const weeks: Week[] = [{
@@ -14,19 +16,21 @@
 	{
 		day: 3,
 		dates: [new Date(2024, 0, 30), new Date(2024, 1, 2), new Date(2024, 1, 3)]
-	}]
-	onMount(() => {
-		// Any onMount logic can go here
-	});
+	}];
+
+	let renderedWeeks: Week[] = [];
+	
 </script>
 
 <div>
 	<h1>Mes semaines</h1>
-	<!-- Services Section -->
 	<p>Your browser language is: {browserLang}</p>
 	<section id="services" class="py-20 bg-white">
 		{#each weeks as week}
 			<AWeek week={week} />
 		{/each}
+	</section>
+	<section>
+		<ASemesterCalendar duration={5} semester={SemesterEnum.Winter} year={2025} />
 	</section>
 </div>

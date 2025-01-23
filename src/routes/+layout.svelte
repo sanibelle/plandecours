@@ -1,7 +1,16 @@
 
 <script lang="ts">
+	import { ClientTelemetry } from '$lib/tracer.js';
     import '../styles/app.css';
+	import { onMount } from 'svelte';
     let { children } = $props();
+
+	onMount(async () => {
+		// const telemetry = ClientTelemetry.getInstance();
+		// await telemetry.start();
+		// await telemetry.trackSpan('TEST-ACM', async () => {});
+	});
+	
 </script>
 
 <div class="min-h-screen bg-gray-100">
