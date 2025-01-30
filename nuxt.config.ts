@@ -18,4 +18,5 @@ export default defineNuxtConfig({
     strict: true,
     typeCheck: true,
   },
+  plugins: ['~/plugins/opentelemetry'],
 });

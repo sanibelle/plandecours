@@ -1,6 +1,7 @@
 <script setup lang="ts">
-// Import any required utilities
-// Note: Client telemetry implementation would need to be adjusted for Nuxt
+import useTracing from '~/composables/useTracing';
+
+const { startSpan } = useTracing();
 </script>
 
 <template>
