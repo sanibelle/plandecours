@@ -1,0 +1,19 @@
+<script setup lang="ts">
+// Import any required utilities
+// Note: Client telemetry implementation would need to be adjusted for Nuxt
+</script>
+
+<template>
+  <div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+      POC semaines plan de cours
+      <NuxtLink to="/">Home</NuxtLink>
+    </header>
+
+    <!-- Main content slot -->
+    <slot />
+
+    <footer class="bg-gray-900 text-white py-8">POC semaines plan de cours</footer>
+  </div>
+</template>
