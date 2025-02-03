@@ -45,6 +45,7 @@ export class ClientTelemetry {
   }
 
   public start(): void {
+    if (process.env.NODE_ENV !== 'production') return;
     if (!this.initialized) {
       registerInstrumentations({
         instrumentations: [
