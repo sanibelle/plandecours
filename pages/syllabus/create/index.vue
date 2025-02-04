@@ -4,33 +4,33 @@ import { VueDraggable, type SortableEvent } from 'vue-draggable-plus';
 
 const list = ref([
   {
-    name: 'Jose',
+    name: 'Analyser le projet de développement de l’application.',
     id: 5,
     children: [
       {
-        name: 'Maria',
+        name: 'Analyse juste des documents de conception.',
         id: 6,
         children: [
           {
-            name: 'Carlos',
+            name: "Représentation d'éléments graphiques avancés.",
             id: 7,
           },
           {
-            name: 'Ana',
+            name: 'Compréhension des éléments graphiques avancés dans une charte graphique.',
             id: 8,
           },
         ],
       },
       {
-        name: 'Pedro',
+        name: 'Détermination correcte des tâches à effectuer.',
         id: 9,
         children: [
           {
-            name: 'Luis',
+            name: 'Pertinence et exhaustivité des tâches à effectuer pour mettre en place la solution.',
             id: 10,
           },
           {
-            name: 'Luisa',
+            name: 'Séquence des étapes de développement d’une application Web non transactionnelle.',
             id: 11,
           },
         ],
@@ -38,33 +38,33 @@ const list = ref([
     ],
   },
   {
-    name: 'Juan',
+    name: 'Préparer l’environnement de développement informatique.',
     id: 12,
     children: [
       {
-        name: 'Sofia',
+        name: 'Installation correcte de la plateforme de développement Web et du système de gestion de base de données de développement.',
         id: 13,
         children: [
           {
-            name: 'Miguel',
+            name: 'Procédures d’installation et configuration d’une suite de logiciels de développement (ex. : Visual Studio Code, Brackets).',
             id: 14,
           },
           {
-            name: 'Lucia',
+            name: 'Installation et configuration d’un système de gestion de bases de données (ex. : MSSQL).',
             id: 15,
           },
         ],
       },
       {
-        name: 'Diego',
+        name: 'Installation correcte des logiciels et des bibliothèques.',
         id: 16,
         children: [
           {
-            name: 'Mateo',
+            name: 'Procédures d’installation et configuration d’un mapping objet-relationnel (ORM) (ex. : Entity Framework).',
             id: 17,
           },
           {
-            name: 'Valeria',
+            name: 'Utilisation d’un utilitaire d’importation de librairies/packages (ex. : Nuget).',
             id: 18,
           },
         ],
@@ -73,7 +73,7 @@ const list = ref([
   },
 ]);
 
-const list2 = ref([]);
+const list2 = ref<Array<any>>([]);
 
 const onMoveEnd = (evt: SortableEvent) => {
   console.log('onStart', evt.oldIndex);
@@ -83,60 +83,38 @@ const onMoveEnd = (evt: SortableEvent) => {
 <template>
   <h1>Mes semaines</h1>
   <section id="building" class="py-20 bg-white flex flex-row items-center">
+    <CommonNestedDraggable :items="list"></CommonNestedDraggable>
     <VueDraggable
-      v-model="list"
-      :animation="150"
-      ghostClass="ghost"
-      class="container"
-      :group="{ name: 'people', pull: 'clone', put: false }"
-    >
-      <div
-        v-for="item in list"
-        :key="item.id"
-        class="item flex flex-row items-center min-w-[300px] min-h-[500px]"
-      >
-        {{ item.name }}
-        <VueDraggable
-          v-model="list"
-          :animation="150"
-          ghostClass="ghost"
-          class="container"
-          :group="{ name: 'people', pull: 'clone', put: false }"
-        >
-          <div v-for="children in item.children" :key="children.id" class="item">
-            {{ item.name }}
-          </div>
-        </VueDraggable>
-      </div>
-    </VueDraggable>
-    <!-- <VueDraggable
       v-model="list2"
       :animation="150"
       ghostClass="ghost"
-      class="container"
+      class="right min-h-[300px] min-w-[300px]"
       @add="onMoveEnd"
-      :group="{ name: 'people', pull: false, put: true }"
+      :group="{ name: 'syllabus', pull: false, put: true }"
     >
       <div v-for="item in list2" :key="item.id" class="item">
         {{ item.name }}
       </div>
-    </VueDraggable> -->
+    </VueDraggable>
   </section>
 </template>
 
 <style>
-.container {
-  display: grid;
-  gap: 10px;
-  border: solid 1px black;
-  min-height: 100px;
+.left {
+  flex: 1;
 }
+.right {
+  flex: 1;
+}
+.container {
+  border: solid 1px black;
+}
+
 .item {
-  width: 200px;
   background-color: red;
-  height: 30px;
   line-height: 30px;
   text-align: center;
   cursor: move;
+  border: solid 1px black;
 }
 </style>
