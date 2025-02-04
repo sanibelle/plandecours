@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { VueDraggable, type SortableEvent } from 'vue-draggable-plus';
+import { ref, reactive } from 'vue';
+import { VueDraggable } from 'vue-draggable-plus';
+import type NestableItem from '~/types/syllabus/NestableItem';
 
-const list = ref([
+const complete = (item: NestableItem, id: number | undefined = undefined): void => {
+  if (!item.children) {
+    item.isCompleted = item.isCompleted || id === undefined || item.id == id;
+  } else {
+    const seekedId = id === undefined || item.id == id ? undefined : id;
+    item.children?.forEach((child) => complete(child, seekedId));
+  }
+};
+
+const list = reactive<NestableItem[]>([
   {
     name: 'Analyser le projet de développement de l’application.',
     id: 5,
@@ -11,10 +21,7 @@ const list = ref([
         name: 'Analyse juste des documents de conception.',
         id: 6,
         children: [
-          {
-            name: "Représentation d'éléments graphiques avancés.",
-            id: 7,
-          },
+          { name: "Représentation d'éléments graphiques avancés.", id: 7 },
           {
             name: 'Compréhension des éléments graphiques avancés dans une charte graphique.',
             id: 8,
@@ -73,28 +80,56 @@ const list = ref([
   },
 ]);
 
-const list2 = ref<Array<any>>([]);
+const list2 = ref<NestableItem[]>([]);
 
-const onMoveEnd = (evt: SortableEvent) => {
-  console.log('onStart', evt.oldIndex);
+const onMoveEnd = (id: number) => {
+  for (const item of list) {
+    complete(item, id);
+  }
+};
+const onRemove = (id: number) => {
+  const findAndRemove = (items: NestableItem[], id: number) => {
+    const index = items.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      items.splice(index, 1);
+    }
+    for (const item of items) {
+      if (item.children && findAndRemove(item.children, id)) {
+      }
+    }
+  };
+
+  findAndRemove(list2.value, id);
+};
+
+const idsToHighLight = ref<number[]>([]);
+
+const onHighlight = (ids: number[]) => {
+  idsToHighLight.value = ids;
 };
 </script>
 
 <template>
   <h1>Mes semaines</h1>
+  <pre>
+    {{ list }}
+  </pre>
   <section id="building" class="py-20 bg-white flex flex-row items-center">
-    <CommonNestedDraggable :items="list"></CommonNestedDraggable>
+    <CommonNestedDraggable @end="onMoveEnd" v-model="list" :ids-to-highlight="idsToHighLight" />
     <VueDraggable
       v-model="list2"
       :animation="150"
       ghostClass="ghost"
       class="right min-h-[300px] min-w-[300px]"
-      @add="onMoveEnd"
       :group="{ name: 'syllabus', pull: false, put: true }"
     >
-      <div v-for="item in list2" :key="item.id" class="item">
-        {{ item.name }}
-      </div>
+      <template v-for="item in list2" :key="item.id" class="item">
+        <SyllabusContent
+          :item="item"
+          @on-remove="onRemove"
+          @onHighlight="onHighlight"
+        ></SyllabusContent>
+      </template>
     </VueDraggable>
   </section>
 </template>
@@ -116,5 +151,8 @@ const onMoveEnd = (evt: SortableEvent) => {
   text-align: center;
   cursor: move;
   border: solid 1px black;
+}
+.highlight {
+  background-color: yellow;
 }
 </style>

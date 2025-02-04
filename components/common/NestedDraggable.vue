@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { toRef } from 'vue';
-import { defineProps } from 'vue';
 import { VueDraggable, type SortableEvent } from 'vue-draggable-plus';
+import type NestableItem from '~/types/syllabus/NestableItem';
 
-const props = defineProps({
-  items: {
-    type: Array<any>,
+const emit = defineEmits(['end', 'update:modelValue']);
+const { modelValue, group, idsToHighlight } = defineProps({
+  modelValue: {
+    type: Array<NestableItem>,
     required: true,
   },
   group: {
@@ -13,29 +13,54 @@ const props = defineProps({
     required: false,
     default: 1,
   },
+  idsToHighlight: {
+    type: Array<number>,
+    required: true,
+  },
+});
+
+const items = computed({
+  get: () => modelValue,
+  set: (value) => {
+    emit('update:modelValue', value);
+  },
 });
 
 const onMoveEnd = (evt: SortableEvent) => {
-  console.log('onMoveEnd', evt.oldIndex, evt.newIndex);
+  emit('end', evt.item.dataset.id);
 };
 
-const items = toRef(props, 'items');
+const isCompleted = (item: NestableItem): boolean => {
+  return item.children
+    ? item.children.every((x: NestableItem) => isCompleted(x))
+    : !!item.isCompleted;
+};
 </script>
+
 <template>
   <VueDraggable
     v-model="items"
     :animation="150"
     ghostClass="ghost"
-    :group="`${group}`"
+    :group="{ name: `${group}`, pull: 'clone' }"
     @end="onMoveEnd"
   >
-    <div v-for="item in items" :key="item.id" class="item">
+    <div v-for="item in items" :key="item.id" class="item" :data-id="item.id">
       <div class="flex flex-row">
-        <p>{{ item.name }}</p>
+        <p
+          :class="{
+            completed: isCompleted(item),
+            highlight: idsToHighlight.some((x) => x == item.id),
+          }"
+        >
+          {{ item.name }}
+        </p>
         <CommonNestedDraggable
           v-if="item.children && item.children.length"
-          :items="item.children"
-          :group="props.group + 1"
+          v-model="item.children"
+          :group="group + 1"
+          :ids-to-highlight="idsToHighlight"
+          @end="(id) => emit('end', id)"
         />
       </div>
     </div>
@@ -50,5 +75,9 @@ const items = toRef(props, 'items');
   cursor: move;
   border: solid 1px black;
   margin-bottom: 5px;
+}
+
+.completed {
+  text-decoration: line-through;
 }
 </style>
