@@ -1,4 +1,7 @@
-import { resolve } from 'path';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'url';
+import { plugin } from 'postcss';
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -19,4 +22,14 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
   plugins: ['~/plugins/opentelemetry'],
+  i18n: {
+    strategy: 'prefix_except_default',
+    customRoutes: 'page',
+    defaultLocale: 'fr',
+    locales: [{ code: 'fr', iso: 'fr-CA', name: 'Français', file: 'fr.json' }],
+    detectBrowserLanguage: {
+      useCookie: true,
+    },
+  },
+  modules: ['@nuxtjs/i18n'],
 });

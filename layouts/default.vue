@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import useTracing from '~/composables/useTracing';
-
-const { startSpan } = useTracing();
 </script>
 
 <template>
