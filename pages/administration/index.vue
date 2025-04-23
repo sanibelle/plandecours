@@ -2,16 +2,12 @@
 const { t } = useI18n();
 defineI18nRoute({
   paths: {
-    fr: '/administrationnnn',
+    fr: '/gestion',
   },
 });
 </script>
 
-<template>
-  <p>test</p>
-  <div>{{ t('test') }}</div>
-  <div>{{ $t('test') }}</div>
-</template>
+<template></template>
 
 <i18n lang="json">
 {

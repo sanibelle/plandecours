@@ -8,6 +8,15 @@ import useTracing from '~/composables/useTracing';
     <header class="bg-white shadow-md">
       POC semaines plan de cours
       <NuxtLink to="/">Home</NuxtLink>
+      <div>
+        <div v-if="$auth.isAuthenticated">
+          Welcome, {{ $auth.user.name }}!
+          <button @click="$auth.logout">Logout</button>
+        </div>
+        <div v-else>
+          <button @click="$auth.login">Login</button>
+        </div>
+      </div>
     </header>
 
     <!-- Main content slot -->

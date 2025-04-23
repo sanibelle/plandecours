@@ -31,5 +31,5 @@ export default defineNuxtConfig({
       useCookie: true,
     },
   },
-  modules: ['@nuxtjs/i18n'],
+  modules: ['@nuxtjs/i18n', '@pinia/nuxt'],
 });
