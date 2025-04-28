@@ -1,9 +1,13 @@
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'url';
-import { plugin } from 'postcss';
+import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
+  // Utilisé pour le https en local pour que les cookie secure soient acceptés
+  devServer: {
+    https: {
+      key: 'certificates/localhost-key.pem',
+      cert: 'certificates/localhost.pem',
+    },
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
@@ -23,6 +27,9 @@ export default defineNuxtConfig({
   },
   plugins: ['~/plugins/opentelemetry'],
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     strategy: 'prefix_except_default',
     customRoutes: 'page',
     defaultLocale: 'fr',
@@ -31,5 +38,19 @@ export default defineNuxtConfig({
       useCookie: true,
     },
   },
-  modules: ['@nuxtjs/i18n', '@pinia/nuxt'],
+  modules: [
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    'nuxt-security',
+    '@vee-validate/nuxt',
+  ],
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: '',
+    },
+  },
+  imports: {
+    dirs: ['composables/**'],
+  },
 });
