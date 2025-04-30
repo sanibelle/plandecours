@@ -33,7 +33,13 @@ const upsertProgramOfStudyModal = useModal();
     <p>{{ program.description }}</p>
   </div>
 
-  <CommonAModal v-model="upsertProgramOfStudyModal.isOpen.value" :title="t('title')" />
+  <CommonAModal v-model="upsertProgramOfStudyModal.isOpen.value" :title="t('title')">
+    <ProgramOfStudyForm
+      @submit="upsertProgramOfStudyModal.close()"
+      :program="null"
+      :isEdit="false"
+    />
+  </CommonAModal>
 </template>
 
 <i18n lang="json">

@@ -2385,6 +2385,11 @@
   resolved "https://registry.yarnpkg.com/@unrs/resolver-binding-win32-x64-msvc/-/resolver-binding-win32-x64-msvc-1.7.0.tgz#c130ae8c0ce56dd1fe952d44fe95a6f9a91cccb6"
   integrity sha512-Jf14pKofg58DIwcZv4Wt9AyVVe7bSJP8ODz+EP9nG/rho08FQzan0VOJk1g6/BNE1RkoYd+lRTWK+/BgH12qoQ==
 
+"@vee-validate/i18n@^4.15.0":
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.15.0.tgz#4e1636f4c61b4a86446c4048598740538c5f1658"
+  integrity sha512-XAXoIhcgy4//9WBmxK/6Wnv14Bwkrka/0PMHPOxUhbc8y4QfdIRbyFWvxWZw2nzc6suHrFIePt1mBx91aTqIwg==
+
 "@vee-validate/nuxt@4.15.0":
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/@vee-validate/nuxt/-/nuxt-4.15.0.tgz#04957dc6033f1bebd017b4630cb8673277702d26"
@@ -2392,6 +2397,13 @@
   dependencies:
     "@nuxt/kit" "^3.13.2"
     local-pkg "^0.5.0"
+    vee-validate "4.15.0"
+
+"@vee-validate/rules@^4.15.0":
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.15.0.tgz#4f71b35faf53cb7d5e7636b7ba73b6bec2867420"
+  integrity sha512-Cvll7r98O5tU6ew2AUifVpdhNnTkMTY7+D9N++J7apQXRXWfHMe4tNvjo4TJpKUPCtfLHbdTY/DCquDRc+uH4w==
+  dependencies:
     vee-validate "4.15.0"
 
 "@vee-validate/zod@^4.15.0":
