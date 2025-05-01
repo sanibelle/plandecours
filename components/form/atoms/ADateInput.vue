@@ -10,10 +10,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  type: {
-    type: String,
-    default: 'text',
-  },
   placeholder: {
     type: String,
     default: '',
@@ -26,15 +22,24 @@ const props = defineProps({
     type: [String, Object],
     default: '',
   },
+  minDate: {
+    type: Date,
+    default: null,
+  },
+  maxDate: {
+    type: Date,
+    default: null,
+  },
   modelValue: {
-    type: [String, Number],
-    default: '',
+    type: Date,
+    default: undefined,
   },
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-const { value, errorMessage, handleBlur, setValue } = useField(props.name, props.rules);
+// Use VeeValidate's useField to handle validation
+const { value, setValue, errorMessage } = useField(props.name, props.rules);
 
 watch(
   () => props.modelValue,
@@ -42,25 +47,32 @@ watch(
     if (newValue !== value.value) {
       setValue(newValue);
     }
-  },
-  { immediate: true }
+  }
 );
 
-// Directly emit value changes to parent
-const updateValue = (e: Event) => emit('update:modelValue', (e.target as HTMLInputElement).value);
+watch(value, (newVal) => {
+  // Devrait prévenir la recursion infinie
+  if (newVal !== props.modelValue) {
+    emit('update:modelValue', newVal);
+  }
+});
+
+const handleChange = async (date: Date): Promise<void> => {
+  await setValue(date);
+  emit('update:modelValue', date);
+};
 </script>
 
 <template>
-  <input
-    :id="id"
-    :value="value"
-    :type="type"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    class="base-input"
-    :class="{ error: errorMessage }"
-    @input="updateValue"
-    @blur="handleBlur"
+  <VueDatePicker
+    :model-value="value"
+    :enable-time-picker="false"
+    :teleport="true"
+    :auto-apply="true"
+    :class="{ 'is-invalid': errorMessage }"
+    :minDate="minDate"
+    :maxDate="maxDate"
+    @update:model-value="handleChange"
   />
 </template>
 

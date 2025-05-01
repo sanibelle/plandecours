@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { SelectOption } from '@@/types/Forms/SelectOption';
 import { useField } from 'vee-validate';
-import { watch, computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
   id: {
@@ -14,7 +13,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: 'Select an option',
+    default: '',
   },
   disabled: {
     type: Boolean,
@@ -37,25 +36,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-// VeeValidate integration with controlled initialization
-const { value, errorMessage, handleBlur, setValue, meta, validate } = useField(
-  props.name,
-  props.rules,
-  {
-    validateOnValueUpdate: true,
-  }
-);
+const { value, errorMessage, handleBlur, setValue } = useField(props.name, props.rules);
 
-onMounted(async () => {
-  if (props.modelValue !== undefined && props.modelValue !== null) {
-    await setValue(props.modelValue);
-  }
-});
-
-// Bidirectional sync with v-model
+// Watch parent → field
 watch(
   () => props.modelValue,
   async (newVal) => {
+    // Devrait prévenir la recursion infinie
     if (newVal !== value.value) {
       await setValue(newVal);
     }
@@ -63,24 +50,12 @@ watch(
   { immediate: true }
 );
 
-// Keep the parent model updated
-watch(value, (newVal) => {
-  if (newVal !== props.modelValue) {
-    emit('update:modelValue', newVal);
-  }
-});
-
 const handleChange = async (event: Event): Promise<void> => {
   const target = event.target as HTMLSelectElement;
   const newValue: string = target.value;
   await setValue(newValue);
   emit('update:modelValue', newValue);
 };
-
-// Determine if the placeholder should be shown
-const hasValue = computed(() => {
-  return value.value !== undefined && value.value !== null && value.value !== '';
-});
 </script>
 
 <template>
@@ -91,11 +66,11 @@ const hasValue = computed(() => {
       :value="value"
       :disabled="disabled"
       class="base-select"
-      :class="{ error: errorMessage, 'has-value': hasValue }"
+      :class="{ error: errorMessage }"
       @change="handleChange"
       @blur="handleBlur"
     >
-      <option v-if="placeholder" value="" :disabled="meta.touched">
+      <option v-if="placeholder" value="" disabled>
         {{ placeholder }}
       </option>
       <option
@@ -128,68 +103,45 @@ const hasValue = computed(() => {
 .select-wrapper {
   position: relative;
   width: 100%;
-}
-
-.select-wrapper.is-disabled {
-  opacity: 0.7;
-}
-
-.base-select {
-  width: 100%;
-  appearance: none;
-  padding: 8px 12px;
-  padding-right: 32px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.base-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
-}
-
-.base-select.error {
-  border-color: #ef4444;
-}
-
-.base-select:disabled {
-  background-color: #f1f5f9;
-  color: #64748b;
-  cursor: not-allowed;
+  .is-disabled {
+    opacity: 0.7;
+  }
+  .base-select {
+    width: 100%;
+    appearance: none;
+    padding: 8px 12px;
+    padding-right: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+    }
+    &:disabled {
+      background-color: #f1f5f9;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+  }
 }
 
 /* Custom arrow styling */
 .select-arrow {
   position: absolute;
-  top: 50%;
+  top: 70%;
   right: 10px;
   transform: translateY(-50%);
   pointer-events: none;
   color: #64748b;
-}
-
-.is-disabled .select-arrow {
-  opacity: 0.5;
-}
-
-/* Fix for Firefox focus border */
-@-moz-document url-prefix() {
-  .base-select {
-    text-indent: 0.01px;
-    text-overflow: '';
-    padding-right: 12px;
+  .is-disabled {
+    opacity: 0.5;
   }
-}
-
-/* Fix for IE10+ */
-select::-ms-expand {
-  display: none;
 }
 </style>

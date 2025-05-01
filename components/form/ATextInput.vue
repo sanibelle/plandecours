@@ -46,20 +46,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-// Create a local input value
-const inputValue = ref(props.modelValue);
-
-// Watch for changes in the modelValue prop
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (newVal !== inputValue.value) {
-      inputValue.value = newVal;
-    }
-  }
-);
-
-// Computed validation rules based on props
 const validationRules = computed(() => {
   const rules = [];
 
@@ -81,12 +67,6 @@ const validationRules = computed(() => {
 
   return rules.join('|');
 });
-
-// Update the value
-const updateValue = (value) => {
-  inputValue.value = value;
-  emit('update:modelValue', value);
-};
 </script>
 
 <template>
@@ -99,7 +79,7 @@ const updateValue = (value) => {
     :required="required"
     :rules="validationRules"
     :hint="hint"
-    :modelValue="inputValue"
-    @update:modelValue="updateValue"
+    :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
   />
 </template>

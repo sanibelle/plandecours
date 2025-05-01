@@ -8,6 +8,9 @@ export default defineNuxtConfig({
       cert: 'certificates/localhost.pem',
     },
   },
+  build: {
+    transpile: ['@vuepic/vue-datepicker'],
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],

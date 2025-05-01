@@ -1,6 +1,16 @@
 // plugins/vee-validate.js
 import { defineRule, configure } from 'vee-validate';
-import { required, email, min, max, regex } from '@vee-validate/rules';
+import {
+  required,
+  email,
+  min,
+  max,
+  regex,
+  max_value,
+  min_value,
+  numeric,
+  integer,
+} from '@vee-validate/rules';
 import { localize } from '@vee-validate/i18n';
 
 export default defineNuxtPlugin(() => {
@@ -10,21 +20,22 @@ export default defineNuxtPlugin(() => {
   defineRule('min', min);
   defineRule('max', max);
   defineRule('regex', regex);
+  defineRule('max_value', max_value);
+  defineRule('min_value', min_value);
+  defineRule('numeric', numeric);
+  defineRule('integer', integer);
 
   // Exemple de custom rule
-  //   defineRule('password', (value) => {
-  //     if (!value || !value.length) {
-  //       return true; // Skip validation if field is empty (required will handle this)
-  //     }
-
-  //     // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-  //     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-  //     if (!passwordRegex.test(value)) {
-  //       return false;
-  //     }
-
-  //     return true;
-  //   });
+  defineRule('date', (value: any) => {
+    // Skip validation if field is empty (required will handle this)
+    if (!value) {
+      return true;
+    }
+    if (value instanceof Date) {
+      return false;
+    }
+    return true;
+  });
 
   // Configure VeeValidate globally
   configure({
@@ -36,6 +47,10 @@ export default defineNuxtPlugin(() => {
           min: 'Ce champ doit contenir au moins {length} caractères',
           max: 'Ce champ ne doit pas dépasser {length} caractères',
           regex: 'Le format de ce champ est invalide',
+          max_value: 'La valeur ne doit pas dépasser {max}',
+          min_value: 'La valeur doit être au moins {min}',
+          numeric: 'Ce champ doit être un nombre',
+          integer: 'Ce champ doit être un nombre entier',
         },
       },
     }),

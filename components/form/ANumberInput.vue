@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed, watch } from 'vue';
-import type { SelectOption } from '~/types/Forms/SelectOption';
 
 const props = defineProps({
   name: {
@@ -27,13 +26,20 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  options: {
-    type: Array<SelectOption>,
-    required: true,
-    default: () => [],
+  min: {
+    type: Number,
+    default: null,
+  },
+  max: {
+    type: Number,
+    default: null,
+  },
+  integer: {
+    type: Boolean,
+    default: false,
   },
   modelValue: {
-    type: [String, Number],
+    type: [String, Number], // lorsque vide, c'est un String
     default: '',
   },
 });
@@ -42,26 +48,41 @@ const emit = defineEmits(['update:modelValue']);
 
 // Computed validation rules based on props
 const validationRules = computed(() => {
-  const rules = [];
+  const rules = ['numeric'];
+
   if (props.required) {
     rules.push('required');
   }
+
+  if (props.integer) {
+    rules.push('integer');
+  }
+
+  if (props.min !== null) {
+    rules.push(`min_value:${props.minLength}`);
+  }
+
+  if (props.max !== null) {
+    rules.push(`max_value:${props.maxLength}`);
+  }
+
   return rules.join('|');
 });
 </script>
 
 <template>
-  <FormMoleculesASelectField
+  <FormMoleculesAFormField
     :name="name"
     :label="label"
-    type="text"
+    type="number"
     :placeholder="placeholder"
     :disabled="disabled"
     :required="required"
     :rules="validationRules"
     :hint="hint"
-    :options="options"
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
   />
 </template>
+
+<!-- @update:modelValue="updateValue" -->

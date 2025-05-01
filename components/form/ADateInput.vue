@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed, watch } from 'vue';
-import type { SelectOption } from '~/types/Forms/SelectOption';
 
 const props = defineProps({
   name: {
@@ -8,10 +7,6 @@ const props = defineProps({
     required: true,
   },
   label: {
-    type: String,
-    default: '',
-  },
-  placeholder: {
     type: String,
     default: '',
   },
@@ -27,14 +22,17 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  options: {
-    type: Array<SelectOption>,
-    required: true,
-    default: () => [],
+  min: {
+    type: Date,
+    default: null,
+  },
+  max: {
+    type: Date,
+    default: null,
   },
   modelValue: {
-    type: [String, Number],
-    default: '',
+    type: Date,
+    default: undefined,
   },
 });
 
@@ -42,25 +40,32 @@ const emit = defineEmits(['update:modelValue']);
 
 // Computed validation rules based on props
 const validationRules = computed(() => {
-  const rules = [];
-  if (props.required) {
-    rules.push('required');
+  const rules = ['date'];
+
+  if (props.required !== null) {
+    rules.push(`required`);
   }
+  if (props.min !== null) {
+    rules.push(`min_date:${props.min}`);
+  }
+
+  if (props.max !== null) {
+    rules.push(`max_date:${props.max}`);
+  }
+
   return rules.join('|');
 });
 </script>
 
 <template>
-  <FormMoleculesASelectField
+  <FormMoleculesADateField
     :name="name"
     :label="label"
-    type="text"
-    :placeholder="placeholder"
+    type="date"
     :disabled="disabled"
     :required="required"
     :rules="validationRules"
     :hint="hint"
-    :options="options"
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
   />

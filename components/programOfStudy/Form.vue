@@ -3,17 +3,14 @@ import { ref, reactive } from 'vue';
 import { Form } from 'vee-validate';
 import type { SelectOption } from '~/types/Forms/SelectOption';
 import { ProgramType } from '~/types/enum/ProgramType';
+import type { ProgramOfStudy } from '~/types/Ministerial/ProgramOfStudy';
 
 const { t } = useI18n();
 
 const emit = defineEmits(['submit']);
 
 // Form values
-const programOfStudy = reactive({
-  name: '',
-  code: '',
-  programType: '',
-});
+const programOfStudy = reactive<Partial<ProgramOfStudy>>({});
 
 // Form submission state
 const isSubmitting = ref(false);
@@ -47,34 +44,56 @@ const options: SelectOption[] = Object.entries(ProgramType)
       <FormATextInput
         name="name"
         :label="t('programName')"
+        :placeholder="t('programNamePlaceholder')"
         :minLength="2"
         :maxLength="50"
         v-model="programOfStudy.name"
-        hint="Ex : Sciences humaines"
       />
       <FormATextInput
-        name="programCode"
+        name="code"
         :label="t('programCode')"
+        placeholder="Ex : 300.A1"
         :minLength="2"
         :maxLength="50"
         v-model="programOfStudy.code"
-        hint="Ex : 300.A1"
       />
-      {{ programOfStudy }}
       <FormASelectInput
         name="programType"
+        :placeholder="t('programTypePlaceholder')"
         :label="t('programType')"
         :required="true"
         :options="options"
         v-model="programOfStudy.programType"
-      >
-      </FormASelectInput>
+      />
+      <FormANumberInput
+        name="monthsDuration"
+        :label="t('monthsDuration')"
+        :min="0"
+        v-model="programOfStudy.monthsDuration"
+      />
+      <FormANumberInput
+        name="specificDurationHours"
+        :label="t('specificDurationHours')"
+        :min="0"
+        v-model="programOfStudy.specificDurationHours"
+        :hint="t('specificDurationHoursHint')"
+      />
+      <FormANumberInput
+        name="totalDurationHours"
+        :label="t('totalDurationHours')"
+        :min="0"
+        v-model="programOfStudy.totalDurationHours"
+        :hint="t('totalDurationHoursHint')"
+      />
+      <FormADateInput
+        name="publishedOn"
+        :label="t('publishedOn')"
+        :hint="t('publishedOnHint')"
+        v-model="programOfStudy.publishedOn"
+        :required="true"
+      />
+      {{ programOfStudy }}
       <ul>
-        <li>Sanction</li>
-        <li>MonthsDuration</li>
-        <li>SpecificDurationHours</li>
-        <li>TotalDurationHours : Dire que c'est le maximum possible</li>
-        <li>PublishedOn</li>
         <li>SpecificUnits : Dire que c'est le maximum possible</li>
         <li>OptionnalUnits</li>
         <li>GeneralUnits</li>
@@ -97,6 +116,15 @@ const options: SelectOption[] = Object.entries(ProgramType)
     "programName": "Titre du programme",
     "programCode": "Code du programme",
     "programType": "Type de programme",
+    "programTypePlaceholder":"Sélectionner un type de programme",
+    "programNamePlaceholder":"Ex : Sciences humaines",
+    "monthsDuration": "Durée en mois",
+    "totalDurationHours": "Durée totale en heures",
+    "specificDurationHours": "Durée spécifique en heures",
+    "specificDurationHoursHint": "Nombre d'heures spécifiques au programme",
+    "totalDurationHoursHint": "Nombre d'heures spécifiques au programme et à la formation générale",
+    "publishedOn": "Publié le",
+    "publishedOnHint": "Date de publication du programme",
   }
 }
 </i18n>
