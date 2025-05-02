@@ -1,5 +1,5 @@
 // composables/services/ProgramService.ts
-import type { ProgramOfStudy } from '~/types/Ministerial/ProgramOfStudy';
+import type { ProgramOfStudy } from '~/types/ministerial/ProgramOfStudy';
 import { useApi } from './ApiClient';
 
 // Use named export instead of default export

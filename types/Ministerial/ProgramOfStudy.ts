@@ -1,12 +1,12 @@
-import type { Unit } from '../common/Units';
+import type { Unit } from '../common/Unit';
 import type { ProgramType } from '../enum/ProgramType';
 
 type ProgramOfStudy = {
   code: string;
-  specificUnits?: Unit | null;
-  optionnalUnits?: Unit | null;
-  generalUnits: Unit;
-  complementaryUnits: Unit;
+  specificUnits?: Unit | Partial<Unit>;
+  optionnalUnits?: Unit | Partial<Unit> | null;
+  generalUnits: Unit | Partial<Unit> | null;
+  complementaryUnits: Unit | Partial<Unit> | null;
   name: string;
   programType: ProgramType;
   monthsDuration: number;

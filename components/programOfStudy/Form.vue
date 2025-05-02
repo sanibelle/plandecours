@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { Form } from 'vee-validate';
-import type { SelectOption } from '~/types/Forms/SelectOption';
+import type { SelectOption } from '~/types/forms/SelectOption';
 import { ProgramType } from '~/types/enum/ProgramType';
-import type { ProgramOfStudy } from '~/types/Ministerial/ProgramOfStudy';
+import type { ProgramOfStudy } from '~/types/ministerial/ProgramOfStudy';
+import { FormAUnitInput } from '#components';
+import type { Unit } from '~/types/common/Unit';
 
 const { t } = useI18n();
 
 const emit = defineEmits(['submit']);
 
 // Form values
-const programOfStudy = reactive<Partial<ProgramOfStudy>>({});
+const programOfStudy = reactive<Partial<ProgramOfStudy>>({
+  specificUnits: {},
+});
 
 // Form submission state
 const isSubmitting = ref(false);
@@ -92,6 +96,13 @@ const options: SelectOption[] = Object.entries(ProgramType)
         v-model="programOfStudy.publishedOn"
         :required="true"
       />
+      <FormAUnitInput
+        name="specificUnits"
+        :label="t('specificUnits')"
+        :hint="t('specificUnitsHint')"
+        v-model="programOfStudy.specificUnits"
+        :required="true"
+      />
       {{ programOfStudy }}
       <ul>
         <li>SpecificUnits : Dire que c'est le maximum possible</li>
@@ -125,6 +136,8 @@ const options: SelectOption[] = Object.entries(ProgramType)
     "totalDurationHoursHint": "Nombre d'heures spécifiques au programme et à la formation générale",
     "publishedOn": "Publié le",
     "publishedOnHint": "Date de publication du programme",
+    "specificUnits": "Unités spécifiques",
+    "specificUnitsHint": "Unités spécifiques au programme",
   }
 }
 </i18n>

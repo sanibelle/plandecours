@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import type { SelectOption } from '~/types/Forms/SelectOption';
+import type { SelectOption } from '~/types/forms/SelectOption';
 
 const props = defineProps({
   name: {

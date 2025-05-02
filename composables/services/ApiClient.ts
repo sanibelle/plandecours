@@ -5,7 +5,7 @@ import {
   ServerException,
   UnauthorizedException,
   ValidationException,
-} from '~/types/Exceptions/ApiExceptions';
+} from '~/types/exceptions/ApiExceptions';
 
 export interface Options<T = any> {
   data?: T;

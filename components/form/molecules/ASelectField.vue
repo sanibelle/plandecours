@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
-import type { SelectOption } from '~/types/Forms/SelectOption';
+import type { SelectOption } from '~/types/forms/SelectOption';
 
 const props = defineProps({
   id: {
@@ -41,7 +41,7 @@ const props = defineProps({
     required: true,
   },
   modelValue: {
-    type: [String, Number],
+    type: [String, Number, null],
     default: '',
   },
 });
