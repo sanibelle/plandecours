@@ -3,10 +3,10 @@ import type { ProgramType } from '../enum/ProgramType';
 
 type ProgramOfStudy = {
   code: string;
-  specificUnits?: Unit | Partial<Unit>;
-  optionnalUnits?: Unit | Partial<Unit> | null;
-  generalUnits: Unit | Partial<Unit> | null;
-  complementaryUnits: Unit | Partial<Unit> | null;
+  specificUnits: Unit | Partial<Unit>;
+  optionnalUnits: Unit | Partial<Unit>;
+  generalUnits: Unit | Partial<Unit>;
+  complementaryUnits: Unit | Partial<Unit>;
   name: string;
   programType: ProgramType;
   monthsDuration: number;

@@ -10,7 +10,7 @@ const { fetchPrograms } = useProgramOfStudy();
 const programsOfSudy = ref([]);
 
 onMounted(async () => {
-  programsOfSudy.value = await fetchPrograms();
+  // programsOfSudy.value = await fetchPrograms();
 });
 
 const upsertProgramOfStudyModal = useModal();
@@ -34,23 +34,17 @@ const upsertProgramOfStudyModal = useModal();
   </div>
 
   <CommonAModal v-model="upsertProgramOfStudyModal.isOpen.value" :title="t('title')">
-    <ProgramOfStudyForm
-      @submit="upsertProgramOfStudyModal.close()"
-      :program="null"
-      :isEdit="false"
-    />
+    <ProgramOfStudyForm @submit="upsertProgramOfStudyModal.close()" :program="null" :isEdit="false" />
   </CommonAModal>
 </template>
 
-<i18n lang="json">
-{
+<i18n lang="json">{
   "fr": {
     "title": "Programmes d'études",
     "noProgramsYet": "Aucun programme d'études disponible pour le moment.",
     "createButton": "Créer un programme d'études"
   }
-}
-</i18n>
+}</i18n>
 
 <style scoped>
 .scholar-row {
@@ -58,8 +52,10 @@ const upsertProgramOfStudyModal = useModal();
   align-items: center;
   margin-bottom: 1rem;
 }
+
 .scholar-btn {
-  background-color: #4caf50; /* Green */
+  background-color: #4caf50;
+  /* Green */
   border: none;
   color: white;
   padding: 10px 20px;

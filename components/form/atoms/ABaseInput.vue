@@ -32,9 +32,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'update:errorMessage']);
 
-const { value, errorMessage, handleBlur, setValue } = useField(props.name, props.rules);
+const { value, errorMessage, handleBlur, setValue, handleChange } = useField(props.name, props.rules, {
+  validateOnMount: false,
+  initialValue: props.modelValue,
+  validateOnValueUpdate: false,
+});
+
 
 watch(
   () => props.modelValue,
@@ -42,26 +47,30 @@ watch(
     if (newValue !== value.value) {
       setValue(newValue);
     }
-  },
-  { immediate: true }
+  }
 );
 
-// Directly emit value changes to parent
-const updateValue = (e: Event) => emit('update:modelValue', (e.target as HTMLInputElement).value);
+const onChange = async (event: Event): Promise<void> => {
+  handleChange(event, !!errorMessage.value);
+  const target = event.target as HTMLInputElement;
+  emit('update:modelValue', target.value);
+};
+
+const onBlur = async (event: Event): Promise<void> => {
+  handleBlur(event, true);
+};
+
+watch(
+  errorMessage,
+  (newErrorMessage) => {
+    emit('update:errorMessage', newErrorMessage);
+  }
+);
 </script>
 
 <template>
-  <input
-    :id="id"
-    :value="value"
-    :type="type"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    class="base-input"
-    :class="{ error: errorMessage }"
-    @input="updateValue"
-    @blur="handleBlur"
-  />
+  <input :name="name" :id="id" :value="value" :type="type" :placeholder="placeholder" :disabled="disabled"
+    class="base-input" :class="{ error: errorMessage }" @input="onChange" @blur="onBlur" />
 </template>
 
 <style scoped>
@@ -72,15 +81,18 @@ const updateValue = (e: Event) => emit('update:modelValue', (e.target as HTMLInp
   border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.2s ease;
+
   &:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
   }
+
   &:disabled {
     background-color: #f1f5f9;
     cursor: not-allowed;
   }
+
   .base-input.error {
     border-color: #ef4444;
   }

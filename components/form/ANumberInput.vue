@@ -39,7 +39,7 @@ const props = defineProps({
     default: false,
   },
   modelValue: {
-    type: [String, Number], // lorsque vide, c'est un String
+    type: [String, Number, null], // lorsque vide, c'est un String
     default: '',
   },
 });
@@ -59,11 +59,11 @@ const validationRules = computed(() => {
   }
 
   if (props.min !== null) {
-    rules.push(`min_value:${props.minLength}`);
+    rules.push(`min_value:${props.min}`);
   }
 
   if (props.max !== null) {
-    rules.push(`max_value:${props.maxLength}`);
+    rules.push(`max_value:${props.max}`);
   }
 
   return rules.join('|');
@@ -71,18 +71,7 @@ const validationRules = computed(() => {
 </script>
 
 <template>
-  <FormMoleculesAFormField
-    :name="name"
-    :label="label"
-    type="number"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :required="required"
-    :rules="validationRules"
-    :hint="hint"
-    :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-  />
+  <FormMoleculesAFormField :name="name" :label="label" type="number" :placeholder="placeholder" :disabled="disabled"
+    :required="required" :rules="validationRules" :hint="hint" :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)" />
 </template>
-
-<!-- @update:modelValue="updateValue" -->

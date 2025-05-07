@@ -26,11 +26,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  minLength: {
+  min: {
     type: Number,
     default: null,
   },
-  maxLength: {
+  max: {
     type: Number,
     default: null,
   },
@@ -53,12 +53,12 @@ const validationRules = computed(() => {
     rules.push('required');
   }
 
-  if (props.minLength !== null) {
-    rules.push(`min:${props.minLength}`);
+  if (props.min) {
+    rules.push(`min:${props.min}`);
   }
 
-  if (props.maxLength !== null) {
-    rules.push(`max:${props.maxLength}`);
+  if (props.max) {
+    rules.push(`max:${props.max}`);
   }
 
   if (props.pattern) {
@@ -70,16 +70,7 @@ const validationRules = computed(() => {
 </script>
 
 <template>
-  <FormMoleculesAFormField
-    :name="name"
-    :label="label"
-    type="text"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :required="required"
-    :rules="validationRules"
-    :hint="hint"
-    :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-  />
+  <FormMoleculesAFormField :name="name" :label="label" type="text" :placeholder="placeholder" :disabled="disabled"
+    :required="required" :rules="validationRules" :hint="hint" :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)" />
 </template>

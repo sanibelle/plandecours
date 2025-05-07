@@ -11,9 +11,11 @@ import {
   numeric,
   integer,
 } from '@vee-validate/rules';
-import { localize } from '@vee-validate/i18n';
+import { localize, setLocale } from '@vee-validate/i18n';
 
 export default defineNuxtPlugin(() => {
+  // Set the default locale to French
+  setLocale('fr');
   // Define global validation rules
   defineRule('required', required);
   defineRule('email', email);
@@ -44,11 +46,23 @@ export default defineNuxtPlugin(() => {
         messages: {
           required: 'Ce champ est requis',
           email: 'Veuillez saisir une adresse e-mail valide',
-          min: 'Ce champ doit contenir au moins {length} caractères',
-          max: 'Ce champ ne doit pas dépasser {length} caractères',
+          min: ({ rule }) =>
+            rule?.params
+              ? `Ce champ doit contenir au moins ${rule?.params} caractères`
+              : 'Ce champ est trop court',
+          max: ({ rule }) =>
+            rule?.params
+              ? `Ce champ ne doit pas dépasser ${rule?.params} caractères`
+              : 'Ce champ est trop long',
           regex: 'Le format de ce champ est invalide',
-          max_value: 'La valeur ne doit pas dépasser {max}',
-          min_value: 'La valeur doit être au moins {min}',
+          max_value: ({ rule }) =>
+            rule?.params
+              ? `La valeur ne doit pas dépasser ${rule?.params}`
+              : 'Cette valeur est trop élevée',
+          min_value: ({ rule }) =>
+            rule?.params
+              ? `La valeur doit être au moins ${rule?.params}`
+              : 'Cette valeur est trop basse',
           numeric: 'Ce champ doit être un nombre',
           integer: 'Ce champ doit être un nombre entier',
         },

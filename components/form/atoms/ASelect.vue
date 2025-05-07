@@ -34,9 +34,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'update:errorMessage']);
 
-const { value, errorMessage, handleBlur, setValue } = useField(props.name, props.rules);
+const { value, errorMessage, handleBlur, setValue, handleChange } = useField(props.name, props.rules,
+  {
+    validateOnMount: false,
+    initialValue: props.modelValue,
+    validateOnValueUpdate: false,
+  });
 
 // Watch parent → field
 watch(
@@ -46,54 +51,40 @@ watch(
     if (newVal !== value.value) {
       await setValue(newVal);
     }
-  },
-  { immediate: true }
+  }
 );
 
-const handleChange = async (event: Event): Promise<void> => {
+const onChange = async (event: Event): Promise<void> => {
+  handleChange(event, !!errorMessage.value);
   const target = event.target as HTMLSelectElement;
   const newValue: string = target.value;
-  await setValue(newValue);
   emit('update:modelValue', newValue);
 };
+
+watch(
+  errorMessage,
+  (newErrorMessage) => {
+    emit('update:errorMessage', newErrorMessage);
+  }
+);
 </script>
 
 <template>
   <div class="select-wrapper" :class="{ 'is-disabled': disabled }">
-    <select
-      :id="id"
-      :name="name"
-      :value="value"
-      :disabled="disabled"
-      class="base-select"
-      :class="{ error: errorMessage }"
-      @change="handleChange"
-      @blur="handleBlur"
-    >
+    <select :id="id" :name="name" :value="value" :disabled="disabled" class="base-select"
+      :class="{ error: errorMessage }" @change="onChange" @blur="handleBlur">
       <option v-if="placeholder" value="" disabled>
         {{ placeholder }}
       </option>
-      <option
-        v-for="({ value, label }, index) in options"
-        :key="`${value}-option-${index}`"
-        :value="value"
-      >
+      <option v-for="({ value, label }, index) in options" :key="`${value}-option-${index}`" :value="value">
         {{ label }}
       </option>
     </select>
     <div class="select-arrow">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        width="16"
-        height="16"
-      >
-        <path
-          fill-rule="evenodd"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+        <path fill-rule="evenodd"
           d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-          clip-rule="evenodd"
-        />
+          clip-rule="evenodd" />
       </svg>
     </div>
   </div>
@@ -103,9 +94,11 @@ const handleChange = async (event: Event): Promise<void> => {
 .select-wrapper {
   position: relative;
   width: 100%;
+
   .is-disabled {
     opacity: 0.7;
   }
+
   .base-select {
     width: 100%;
     appearance: none;
@@ -119,11 +112,13 @@ const handleChange = async (event: Event): Promise<void> => {
     transition:
       border-color 0.2s ease,
       box-shadow 0.2s ease;
+
     &:focus {
       outline: none;
       border-color: #3b82f6;
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
     }
+
     &:disabled {
       background-color: #f1f5f9;
       color: #64748b;
@@ -140,6 +135,7 @@ const handleChange = async (event: Event): Promise<void> => {
   transform: translateY(-50%);
   pointer-events: none;
   color: #64748b;
+
   .is-disabled {
     opacity: 0.5;
   }
