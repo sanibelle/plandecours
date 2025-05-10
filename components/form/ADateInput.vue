@@ -1,6 +1,4 @@
-<script setup>
-import { ref, computed, watch } from 'vue';
-
+<script setup lang="ts">
 const props = defineProps({
   name: {
     type: String,
@@ -58,15 +56,7 @@ const validationRules = computed(() => {
 </script>
 
 <template>
-  <FormMoleculesADateField
-    :name="name"
-    :label="label"
-    type="date"
-    :disabled="disabled"
-    :required="required"
-    :rules="validationRules"
-    :hint="hint"
-    :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)"
-  />
+  <FormMoleculesADateField :name="name" :label="label" type="date" :disabled="disabled" :required="required"
+    :rules="validationRules" :hint="hint" :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)" />
 </template>

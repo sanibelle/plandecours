@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { Form, useForm } from 'vee-validate';
+import '~/assets/css/form.css'
+import { useForm } from 'vee-validate';
 import type { SelectOption } from '~/types/forms/SelectOption';
 import { ProgramType } from '~/types/enum/ProgramType';
 import type { ProgramOfStudy } from '~/types/ministerial/ProgramOfStudy';
@@ -27,19 +27,16 @@ const { handleSubmit, errors, isSubmitting } = useForm<ProgramOfStudy>({
   validateOnMount: false,
 });
 
-const onSubmit = handleSubmit(async (e: any) => {
-  e.preventDefault(); // Prevent default form submission
-  console.log("🚀 ~ onSubmit ~ values:", e)
-  // isSubmitting.value = true;
+const onSubmit = handleSubmit(async () => {
+  isSubmitting.value = true;
 
-  // try {
-  //   // You can process form values here before emitting
-  //   emit('submit', e);
-  // } catch (error) {
-  //   console.error('Form submission error:', error);
-  // } finally {
-  //   isSubmitting.value = false;
-  // }
+  try {
+    emit('submit', programOfStudy);
+  } catch (error) {
+    console.error('Form submission error:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 });
 
 const options: SelectOption[] = Object.entries(ProgramType)
@@ -53,13 +50,10 @@ const options: SelectOption[] = Object.entries(ProgramType)
 <template>
   <div class="user-form">
     {{ errors }}
-    <hr>
-    {{ programOfStudy }}
-    <h2 class="form-title">{{ t('title') }}</h2>
     <form @submit="onSubmit" class="form-container">
       <FormATextInput name="name" :label="t('programName')" :placeholder="t('programNamePlaceholder')" :min="2"
         :max="50" v-model="programOfStudy.name" :required="true" />
-      <FormATextInput name="code" :label="t('programCode')" placeholder="Ex : 300.A1" :min="20" :max="50"
+      <FormATextInput name="code" :label="t('programCode')" placeholder="Ex : 300.A1" :min="3" :max="50"
         :required="true" v-model="programOfStudy.code" />
       <FormASelectInput name="programType" :placeholder="t('programTypePlaceholder')" :label="t('programType')"
         :required="true" :options="options" v-model="programOfStudy.programType" />
@@ -79,8 +73,10 @@ const options: SelectOption[] = Object.entries(ProgramType)
         :required="true" />
       <FormAUnitInput name="complementaryUnits" :label="t('complementaryUnits')"
         v-model="programOfStudy.complementaryUnits" />
-      <FormMoleculesASubmitButton :isSubmiting="isSubmitting" />
-      <input type="submit" value="aaa">
+      <div class="modal-footer">
+        <FormMoleculesASubmitButton :isSubmiting="isSubmitting" />
+      </div>
+
     </form>
   </div>
 </template>

@@ -1,4 +1,6 @@
-<script setup>
+<script setup lang="ts">
+import type { ProgramOfStudy } from '~/types/ministerial/ProgramOfStudy';
+
 const { t } = useI18n();
 defineI18nRoute({
   paths: {
@@ -6,12 +8,22 @@ defineI18nRoute({
   },
 });
 
-const { fetchPrograms } = useProgramOfStudy();
-const programsOfSudy = ref([]);
+const { fetchPrograms, createProgram } = useProgramOfStudy();
+const programsOfSudy = ref<ProgramOfStudy[]>([]);
 
 onMounted(async () => {
-  // programsOfSudy.value = await fetchPrograms();
+  programsOfSudy.value = await fetchPrograms();
 });
+
+const handleSubmit = async (programOfStudy: ProgramOfStudy) => {
+  try {
+    const program = await createProgram(programOfStudy);
+    programsOfSudy.value.unshift(program);
+    upsertProgramOfStudyModal.close()
+  } catch (error) {
+    console.error('Error fetching programs:', error);
+  }
+};
 
 const upsertProgramOfStudyModal = useModal();
 </script>
@@ -28,13 +40,13 @@ const upsertProgramOfStudyModal = useModal();
     </div>
   </section>
   <div v-if="programsOfSudy.length === 0">{{ t('noProgramsYet') }}</div>
-  <div v-for="program in programsOfSudy" :key="program.id">
-    <h2>{{ program.name }}</h2>
-    <p>{{ program.description }}</p>
+  <div v-for="program in programsOfSudy" :key="program.code">
+    <h2>{{ program.code }} - {{ program.name }}</h2>
+    <p></p>
   </div>
 
-  <CommonAModal v-model="upsertProgramOfStudyModal.isOpen.value" :title="t('title')">
-    <ProgramOfStudyForm @submit="upsertProgramOfStudyModal.close()" :program="null" :isEdit="false" />
+  <CommonAModal v-model="upsertProgramOfStudyModal.isOpen.value" :title="t('title')" :hide-footer="true">
+    <ProgramOfStudyForm @submit="handleSubmit" :program="null" :isEdit="false" />
   </CommonAModal>
 </template>
 

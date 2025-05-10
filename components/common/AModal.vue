@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import '~/assets/css/form.css'
+
+const { t } = useI18n();
 defineProps({
   modelValue: {
     type: Boolean,
@@ -9,6 +12,10 @@ defineProps({
     default: 'Modal',
   },
   closeOnOverlayClick: {
+    type: Boolean,
+    default: false,
+  },
+  hideFooter: {
     type: Boolean,
     default: false,
   },
@@ -25,11 +32,8 @@ const confirm = () => {
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div
-        v-if="modelValue"
-        class="modal-overlay"
-        @click="closeOnOverlayClick ? $emit('update:modelValue', false) : null"
-      >
+      <div v-if="modelValue" class="modal-overlay"
+        @click="closeOnOverlayClick ? $emit('update:modelValue', false) : null">
         <div class="modal" @click.stop>
           <div class="modal-header">
             <slot name="header">
@@ -40,12 +44,13 @@ const confirm = () => {
           <div class="modal-body">
             <slot />
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer" v-if="!hideFooter">
             <slot name="footer">
               <button class="modal-button cancel" @click="$emit('update:modelValue', false)">
-                Cancel
+                {{ t('cancel') }}
               </button>
-              <button class="modal-button confirm" @click="confirm">Confirm</button>
+              <button class="modal-button confirm" @click="confirm"> {{ t('confirm') }}
+              </button>
             </slot>
           </div>
         </div>
@@ -54,6 +59,13 @@ const confirm = () => {
   </Teleport>
 </template>
 
+<i18n>{
+  "fr": {
+    "cancel": "Annuler",
+    "confirm": "Confirmer"
+  }
+}</i18n>
+
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -61,7 +73,10 @@ const confirm = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,
+      0,
+      0,
+      0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,7 +90,10 @@ const confirm = () => {
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0,
+      0,
+      0,
+      0.1);
 }
 
 .modal-header {
@@ -90,14 +108,6 @@ const confirm = () => {
   padding: 20px;
 }
 
-.modal-footer {
-  padding: 15px 20px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  border-top: 1px solid #eee;
-}
-
 .close-button {
   transition:
     transform 0.2s,
@@ -109,22 +119,24 @@ const confirm = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0,
+      0,
+      0,
+      0.08);
   background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
 }
+
 .close-button:hover {
   color: #e53935;
   background: linear-gradient(135deg, #ffeaea 60%, #ffd6d6 100%);
   transform: scale(1.15) rotate(12deg);
-  box-shadow: 0 4px 16px rgba(229, 57, 53, 0.15);
+  box-shadow: 0 4px 16px rgba(229,
+      57,
+      53,
+      0.15);
 }
 
-.modal-button {
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  border: none;
-}
+
 
 button:hover {
   transition: background-color 0.2s;

@@ -36,10 +36,17 @@ const emit = defineEmits(['update:modelValue']);
 
 const unit = toRef(props, 'modelValue');
 
-// Computed validation rules based on props
 const validationRules = computed(() => {
   const rules = [];
   if (props.required) {
+    rules.push('required');
+  }
+  return rules.join('|');
+});
+
+const numeratorAndDenominatorRules = computed(() => {
+  const rules = [];
+  if (unit.value.denominator || unit.value.numerator) {
     rules.push('required');
   }
   return rules.join('|');
@@ -85,37 +92,17 @@ const handleWholeUnitChange = (value: number) => {
       {{ label }}
     </FormAtomsABaseLabel>
     <div class="flex">
-      <FormANumberInput
-        :name="`${name}.wholeUnit`"
-        :label="t('wholeUnit')"
-        :disabled="props.disabled"
-        :required="props.required"
-        :integer="true"
-        :modelValue="unit.wholeUnit"
-        @update:modelValue="handleWholeUnitChange"
-      />
-      <FormMoleculesASelectField
-        :name="`${name}.numerator`"
-        :label="t('numerator')"
-        type="text"
-        :disabled="props.disabled"
-        :required="!!unit.denominator && !!!unit.numerator"
-        :rules="validationRules"
-        :options="numeratorOption"
-        :modelValue="unit.numerator"
-        @update:modelValue="handleNumeratorChange"
-      />/
-      <FormMoleculesASelectField
-        :name="`${name}.denominator`"
-        :label="t('denominator')"
-        type="text"
-        :required="!!unit.numerator && !!!unit.denominator"
-        :disabled="props.disabled"
-        :rules="validationRules"
-        :options="denominatorOption"
-        :modelValue="unit.denominator"
-        @update:modelValue="handleDenominatorChange"
-      />
+      <FormANumberInput :name="`${name}.wholeUnit`" :label="t('wholeUnit')" :disabled="props.disabled"
+        :required="props.required" :integer="true" :rules="validationRules" :modelValue="unit.wholeUnit"
+        @update:modelValue="handleWholeUnitChange" />
+      <FormMoleculesASelectField :name="`${name}.numerator`" :label="t('numerator')" type="text"
+        :disabled="props.disabled" :required="numeratorAndDenominatorRules.length > 0"
+        :rules="numeratorAndDenominatorRules" :options="numeratorOption" :modelValue="unit.numerator"
+        @update:modelValue="handleNumeratorChange" />/
+      <FormMoleculesASelectField :name="`${name}.denominator`" :label="t('denominator')" type="text"
+        :required="numeratorAndDenominatorRules.length > 0" :disabled="props.disabled"
+        :rules="numeratorAndDenominatorRules" :options="denominatorOption" :modelValue="unit.denominator"
+        @update:modelValue="handleDenominatorChange" />
     </div>
     <FormAtomsAHint :hint="hint" />
   </div>
@@ -137,12 +124,14 @@ const handleWholeUnitChange = (value: number) => {
   align-items: center;
   gap: 0.5rem;
   justify-content: flex-start;
+
   &:not(:last-child) {
     margin-right: 0.5rem;
   }
 
   div {
     flex-grow: 1;
+
     &:first-child {
       flex-grow: 1;
     }

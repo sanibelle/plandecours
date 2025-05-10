@@ -36,7 +36,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'update:errorMessage']);
 
 // Use VeeValidate's useField to handle validation
 const { value, setValue, errorMessage } = useField(props.name, props.rules);
@@ -61,19 +61,18 @@ const handleChange = async (date: Date): Promise<void> => {
   await setValue(date);
   emit('update:modelValue', date);
 };
+
+watch(
+  errorMessage,
+  (newErrorMessage) => {
+    emit('update:errorMessage', newErrorMessage);
+  }
+);
 </script>
 
 <template>
-  <VueDatePicker
-    :model-value="value"
-    :enable-time-picker="false"
-    :teleport="true"
-    :auto-apply="true"
-    :class="{ 'is-invalid': errorMessage }"
-    :minDate="minDate"
-    :maxDate="maxDate"
-    @update:model-value="handleChange"
-  />
+  <VueDatePicker :model-value="value" :enable-time-picker="false" :teleport="true" :auto-apply="true"
+    :class="{ 'is-invalid': errorMessage }" :minDate="minDate" :maxDate="maxDate" @update:model-value="handleChange" />
 </template>
 
 <style scoped>
@@ -84,15 +83,18 @@ const handleChange = async (date: Date): Promise<void> => {
   border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.2s ease;
+
   &:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
   }
+
   &:disabled {
     background-color: #f1f5f9;
     cursor: not-allowed;
   }
+
   .base-input.error {
     border-color: #ef4444;
   }

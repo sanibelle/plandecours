@@ -42,9 +42,8 @@ const props = defineProps({
 });
 
 defineEmits(['update:modelValue']);
+const errorMessage = ref('');
 
-// Get the error message from VeeValidate
-const { errorMessage } = useField(props.name);
 </script>
 
 <template>
@@ -52,15 +51,9 @@ const { errorMessage } = useField(props.name);
     <FormAtomsABaseLabel :for-id="id" :required="required" v-if="label">
       {{ label }}
     </FormAtomsABaseLabel>
-    <FormAtomsADateInput
-      :id="id"
-      :name="name"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :rules="rules"
-      :modelValue="modelValue"
-      @update:modelValue="$emit('update:modelValue', $event)"
-    />
+    <FormAtomsADateInput :id="id" :name="name" :placeholder="placeholder" :disabled="disabled" :rules="rules"
+      :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)"
+      @update:error-message="errorMessage = $event" />
     <FormAtomsAErrorMessage :message="errorMessage" />
     <FormAtomsAHint :hint="hint" />
   </div>

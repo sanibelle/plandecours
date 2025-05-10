@@ -29,11 +29,10 @@ export default defineNuxtPlugin(() => {
 
   // Exemple de custom rule
   defineRule('date', (value: any) => {
-    // Skip validation if field is empty (required will handle this)
     if (!value) {
       return true;
     }
-    if (value instanceof Date) {
+    if (!(value instanceof Date) && isNaN(Date.parse(value))) {
       return false;
     }
     return true;
@@ -65,6 +64,7 @@ export default defineNuxtPlugin(() => {
               : 'Cette valeur est trop basse',
           numeric: 'Ce champ doit être un nombre',
           integer: 'Ce champ doit être un nombre entier',
+          date: 'La date saisie est invalide',
         },
       },
     }),

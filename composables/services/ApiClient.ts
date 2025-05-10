@@ -7,13 +7,13 @@ import {
   ValidationException,
 } from '~/types/exceptions/ApiExceptions';
 
-export interface Options<T = any> {
-  data?: T;
+export interface Options {
   noRedirectOnLogin?: boolean;
 }
 
-interface InternalOptions extends Options {
+interface InternalOptions<T = any> extends Options {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  data?: T;
 }
 
 export class ApiClient {
@@ -74,7 +74,7 @@ export class ApiClient {
   async Post<ResponseData, Payload = ResponseData>(
     url: string,
     data: Payload,
-    options: Options
+    options: Options = {}
   ): Promise<ResponseData | null> {
     return this.SendRequest<ResponseData>(url, { ...options, method: 'POST', data });
   }
@@ -82,7 +82,7 @@ export class ApiClient {
   async Put<ResponseData, Payload = ResponseData>(
     url: string,
     data: Payload,
-    options: Options
+    options: Options = {}
   ): Promise<ResponseData | null> {
     return this.SendRequest<ResponseData>(url, { ...options, method: 'PUT', data });
   }
@@ -90,7 +90,7 @@ export class ApiClient {
   async Patch<ResponseData, Payload = ResponseData>(
     url: string,
     data: Payload,
-    options: Options
+    options: Options = {}
   ): Promise<ResponseData | null> {
     return this.SendRequest<ResponseData>(url, { ...options, method: 'PATCH', data });
   }

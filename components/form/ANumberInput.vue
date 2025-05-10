@@ -73,5 +73,5 @@ const validationRules = computed(() => {
 <template>
   <FormMoleculesAFormField :name="name" :label="label" type="number" :placeholder="placeholder" :disabled="disabled"
     :required="required" :rules="validationRules" :hint="hint" :modelValue="modelValue"
-    @update:modelValue="$emit('update:modelValue', $event)" />
+    @update:modelValue="$emit('update:modelValue', +$event)" />
 </template>
